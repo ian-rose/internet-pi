@@ -61,7 +61,7 @@ services:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
     ports:
-      - 3030:3000
+      - 3000:3000
     env_file:
       - ./grafana/config.monitoring
     networks:
@@ -92,7 +92,7 @@ services:
       - nginx-proxy
     environment:
       - VIRTUAL_HOST={{ domain_loki }}.{{ domain_name }}
-      - VIRTUAL_PORT=3000
+      - VIRTUAL_PORT=3100
 {% endif %}
 
   promtail:
