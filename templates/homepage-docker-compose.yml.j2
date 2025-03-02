@@ -1,0 +1,38 @@
+# {{ ansible_managed }}
+---
+
+# Use the same networks as internet-monitoring.
+{# Make sure homepage and nginx-proxy are in the same network #}
+networks:
+{% if domain_name_enable and domain_name %}
+  front-tier:
+    name: internet-monitoring-front-tier
+    external: true
+{% endif %}
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+{% if domain_name_enable and domain_name %}
+      VIRTUAL_HOST: {{ domain_name }}
+      VIRTUAL_PORT: 3000
+{% if ssl_enable %}
+      LETSENCRYPT_HOST: {{ domain_name }}
+{% endif %}
+{% endif %}
+    volumes:
+      - ./config:/app/config
+      - ./images:/app/public/images
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3100:3000
+    restart: unless-stopped
+{% if domain_name_enable and domain_name %}
+    networks:
+      - front-tier
+{% endif %}
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4

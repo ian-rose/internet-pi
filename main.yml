@@ -58,3 +58,7 @@
     - name: Set up Timetagger.
       ansible.builtin.import_tasks: tasks/timetagger.yml
       when: timetagger_enable
+
+    - name: Set up Homepage.
+      ansible.builtin.import_tasks: tasks/homepage.yml
+      when: homepage_enable
