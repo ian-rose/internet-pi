@@ -26,6 +26,9 @@ services:
 {% if domain_name_enable and domain_name and domain_timetagger %}
       VIRTUAL_HOST: {{ domain_timetagger }}.{{ domain_name }}
       VIRTUAL_PORT: 8080
+{% if ssl_enable %}
+      LETSENCRYPT_HOST: {{ domain_timetagger }}.{{ domain_name }}
+{% endif %}
 {% endif %}
     volumes:
       - ./_timetagger:/root/_timetagger

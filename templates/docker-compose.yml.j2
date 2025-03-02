@@ -1,8 +1,14 @@
 # {{ ansible_managed }}
 ---
 volumes:
-  prometheus_data: {}
-  grafana_data: {}
+  prometheus_data:
+  grafana_data:
+{% if domain_name_enable and ssl_enable %}
+  certs:
+  html:
+  acme:
+  vhost:
+{% endif %}
 
 networks:
   front-tier:
@@ -14,15 +20,52 @@ services:
 {% if domain_name_enable %}
   nginx-proxy:
     image: nginxproxy/nginx-proxy:latest
+    container_name: nginx-proxy
     restart: always
     ports:
       - "80:80"
+{% if ssl_enable %}
+      - "443:443"
+{% endif %}
     networks:
       - back-tier
       - front-tier
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
+{% if ssl_enable %}
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost:/etc/nginx/vhost.d
+
+  acme-companion:
+    image: nginxproxy/acme-companion:latest
+    container_name: nginx-proxy-acme
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - vhost:/etc/nginx/vhost.d
+    depends_on:
+      - nginx-proxy
+    environment:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+      DEFAULT_EMAIL: {{ ssl_default_email }}
+      ACME_CHALLENGE: {{ acme_challenge }}
+      ACMESH_DNS_API_CONFIG: |-
+        DNS_API: {{ dns_api }}
+        CF_Token: {{ cf_token }}
+        CF_Zone_ID: {{ cf_zone_id }}
+    networks:
+      - back-tier
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+{% endif %}
 {% endif %}
 
   prometheus:
@@ -51,6 +94,9 @@ services:
     environment:
       - VIRTUAL_HOST={{ domain_prometheus }}.{{ domain_name }}
       - VIRTUAL_PORT=9090
+{% if ssl_enable %}
+      - LETSENCRYPT_HOST={{ domain_prometheus }}.{{ domain_name }}
+{% endif %}
 {% endif %}
 
   grafana:
@@ -74,6 +120,9 @@ services:
     environment:
       - VIRTUAL_HOST={{ domain_grafana }}.{{ domain_name }}
       - VIRTUAL_PORT=3000
+{% if ssl_enable %}
+      - LETSENCRYPT_HOST={{ domain_grafana }}.{{ domain_name }}
+{% endif %}
 {% endif %}
 
 {% if log_monitoring_enable %}
@@ -93,6 +142,9 @@ services:
     environment:
       - VIRTUAL_HOST={{ domain_loki }}.{{ domain_name }}
       - VIRTUAL_PORT=3100
+{% if ssl_enable %}
+      - LETSENCRYPT_HOST={{ domain_loki }}.{{ domain_name }}
+{% endif %}
 {% endif %}
 
   promtail:
@@ -127,6 +179,9 @@ services:
       - '--config.file=/config/blackbox.yml'
     networks:
       - back-tier
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
   speedtest:
     image: miguelndecarvalho/speedtest-exporter:latest
@@ -140,6 +195,9 @@ services:
       - 9798:9798
     networks:
       - back-tier
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
   nodeexp:
     image: prom/node-exporter:latest

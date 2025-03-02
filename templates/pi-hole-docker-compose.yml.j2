@@ -25,10 +25,11 @@ services:
       - "67:67/udp"
 {% if domain_name_enable and domain_name and domain_pihole %}
       - "38080:80/tcp"
+      - "3443:443/tcp"
 {% else %}
       - "80:80/tcp"
-{% endif %}
       - "443:443/tcp"
+{% endif %}
     environment:
       TZ: '{{ pihole_timezone }}'
       WEBPASSWORD: '{{ pihole_password }}'
@@ -36,6 +37,9 @@ services:
 {% if domain_name_enable and domain_name and domain_pihole %}
       VIRTUAL_HOST: {{ domain_pihole }}.{{ domain_name }}
       VIRTUAL_PORT: 80
+{% if ssl_enable %}
+      LETSENCRYPT_HOST: {{ domain_pihole }}.{{ domain_name }}
+{% endif %}
       PROXY_LOCATION: {{ domain_pihole }}
     networks:
       - front-tier
