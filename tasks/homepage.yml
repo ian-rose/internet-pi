@@ -1,0 +1,70 @@
+---
+- name: Ensure Homepage directory exists.
+  file:
+    path: "{{ config_dir }}/homepage"
+    state: directory
+    mode: 0755
+  become: false
+
+- name: Ensure Homepage config directory exists.
+  file:
+    path: "{{ config_dir }}/homepage/config"
+    state: directory
+    mode: 0755
+  become: false
+
+- name: Ensure Homepage images directory exists.
+  file:
+    path: "{{ config_dir }}/homepage/images"
+    state: directory
+    mode: 0755
+  become: false
+
+- name: Copy Homepage background image.
+  ansible.builtin.copy:
+    src: images/homepage-background.png
+    dest: "{{ config_dir }}/homepage/images/homepage-background.png"
+    mode: '0640'
+  become: false
+
+- name: Set Homepage settings.
+  lineinfile:
+    dest: "{{ config_dir }}/homepage/config/settings.yaml"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - regexp: "^title:"
+      line: "title: {{ homepage_title }}"
+    - regexp: "^description:"
+      line: "description: {{ homepage_description }}"
+    - regexp: "^startUrl:"
+      line: "startUrl: {{ homepage_startUrl }}"
+    - regexp: "^background:"
+      line: "background: {{ homepage_background }}"
+    - regexp: "^theme:"
+      line: "theme: {{ homepage_theme }}"
+    - regexp: "^color:"
+      line: "color: {{ homepage_color }}"
+    - regexp: "^useEqualHeights:"
+      line: "useEqualHeights: {{ homepage_useEqualHeights }}"
+    - regexp: "^headerStyle:"
+      line: "headerStyle: {{ homepage_headerStyle }}"
+    - regexp: "^target:"
+      line: "target: {{ homepage_target }}"
+    - regexp: "^hideVersion:"
+      line: "hideVersion: {{ homepage_hideVersion }}"
+  become: false
+
+- name: Copy Homepage docker-compose template to Pi.
+  ansible.builtin.template:
+    src: templates/homepage-docker-compose.yml.j2
+    dest: "{{ config_dir }}/homepage/docker-compose.yml"
+    mode: '0640'
+  become: false
+  notify: Restart homepage
+
+- name: Ensure Homepage is running.
+  community.docker.docker_compose_v2:
+    project_src: "{{ config_dir }}/homepage/"
+    build: never
+  become: false
