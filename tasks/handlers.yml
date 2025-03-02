@@ -33,3 +33,10 @@
     build: never
     state: restarted
   become: false
+
+- name: Restart heimdall
+  community.docker.docker_compose_v2:
+    project_src: "{{ config_dir }}/heimdall/"
+    build: never
+    state: restarted
+  become: false
