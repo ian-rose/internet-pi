@@ -1,0 +1,40 @@
+# {{ ansible_managed }}
+---
+
+# Use the same networks as internet-monitoring.
+{# Make sure heimdall and nginx-proxy are in the same network #}
+networks:
+{% if domain_name_enable and domain_name %}
+  front-tier:
+    name: internet-monitoring-front-tier
+    external: true
+{% endif %}
+
+volumes:
+  heimdall:
+
+services:
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Los_Angeles
+{% if domain_name_enable and domain_name %}
+      VIRTUAL_HOST: {{ domain_name }}
+      VIRTUAL_PORT: 8080
+{% if ssl_enable %}
+      LETSENCRYPT_HOST: {{ domain_name }}
+{% endif %}
+{% endif %}
+    volumes:
+      - heimdall:/config
+    ports:
+      - 8080:80
+      - 8443:443
+    restart: unless-stopped
+{% if domain_name_enable and domain_name %}
+    networks:
+      - front-tier
+{% endif %}
