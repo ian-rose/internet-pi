@@ -29,7 +29,7 @@ scrape_configs:
     metrics_path: /metrics
     scrape_interval: 1m
     static_configs:
-      - targets: ['172.17.0.1:9924']
+      - targets: ['shelly-plug:9924']
 {% endif %}
 
 {% if airgradient_enable %}
