@@ -30,7 +30,7 @@
   tasks:
     - name: System configuration.
       ansible.builtin.import_tasks: tasks/system.yml
-      when: using_poe
+      when: using_pi4_poe_hat
 
     - name: Setup Docker.
       ansible.builtin.import_tasks: tasks/docker.yml
