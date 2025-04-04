@@ -29,7 +29,7 @@ scrape_configs:
     metrics_path: /metrics
     scrape_interval: 1m
     static_configs:
-      - targets: ['shelly-plug:9924']
+      - targets: ['{{ ansible_facts['default_ipv4']['address'] }}:9924']
 {% endif %}
 
 {% if airgradient_enable %}
