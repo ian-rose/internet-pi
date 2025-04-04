@@ -16,6 +16,7 @@ services:
     container_name: homepage
 {% if domain_name_enable and domain_name %}
     environment:
+      HOMEPAGE_ALLOWED_HOSTS: {{ domain_name }}
       VIRTUAL_HOST: {{ domain_name }}
       VIRTUAL_PORT: 3000
 {% if ssl_enable %}
