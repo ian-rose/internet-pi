@@ -5,38 +5,29 @@
     state: directory
     mode: 0755
   become: false
+  register: homeassistant_dir
 
-- name: Ensure Home Assistant config directory exists.
+- name: Ensure Home Assistant supporting directories exist.
   file:
-    path: "{{ config_dir }}/config/homeassistant"
+    path: "{{ item }}"
     state: directory
     mode: 0755
-  become: false
-
-- name: Ensure mqtt data directory exists.
-  file:
-    path: "{{ config_dir }}/data/mqtt"
-    state: directory
-    mode: 0755
-  become: false
-
-- name: Ensure zigbee2mqtt data directory exists.
-  file:
-    path: "{{ config_dir }}/data/zigbee2mqtt"
-    state: directory
-    mode: 0755
+  loop:
+    - "{{ homeassistant_dir.path }}/config/homeassistant"
+    - "{{ homeassistant_dir.path }}/data/mqtt"
+    - "{{ homeassistant_dir.path }}/data/zigbee2mqtt"
   become: false
 
 - name: Copy Home Assistant docker-compose template to Pi.
   ansible.builtin.template:
     src: templates/home-assistant-docker-compose.yml.j2
-    dest: "{{ config_dir }}/homeassistant/docker-compose.yml"
+    dest: "{{ homeassistant_dir.path }}/docker-compose.yml"
     mode: '0640'
   become: false
   notify: Restart Home Assistant
 
 - name: Ensure Home Assistant is running.
   community.docker.docker_compose_v2:
-    project_src: "{{ config_dir }}/homeassistant/"
+    project_src: "{{ homeassistant_dir.path }}/"
     build: never
   become: false
