@@ -58,7 +58,7 @@ services:
       - PGID=${PGID:-1000}
 {% if domain_name_enable and domain_name and domain_zigbee2mqtt %}
       - VIRTUAL_HOST={{ domain_zigbee2mqtt }}.{{ domain_name }}
-      - VIRTUAL_PORT=8080
+      - VIRTUAL_PORT=8081
 {% if ssl_enable %}
       - LETSENCRYPT_HOST={{ domain_zigbee2mqtt }}.{{ domain_name }}
 {% endif %}
@@ -70,4 +70,4 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./zigbee2mqtt/data:/app/data
     ports:
-      - 8080:8080
+      - 8080:8081
