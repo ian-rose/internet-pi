@@ -62,3 +62,7 @@
     - name: Set up Homepage.
       ansible.builtin.import_tasks: tasks/homepage.yml
       when: homepage_enable
+
+    - name: Set up Home Assistant.
+      ansible.builtin.import_tasks: tasks/home-assistant.yml
+      when: homeassistant_enable
