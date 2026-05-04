@@ -8,6 +8,9 @@ networks:
   front-tier:
     name: internet-monitoring-front-tier
     external: true
+  back-tier:
+    name: internet-monitoring-back-tier
+    external: true
 {% endif %}
 
 services:
@@ -34,6 +37,11 @@ services:
     restart: unless-stopped
     ports:
       - 8123:8123
+{% if domain_name_enable and domain_name %}
+    networks:
+      - front-tier
+      - back-tier
+{% endif %}
 
   mqtt:
     container_name: mqtt
@@ -49,6 +57,10 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
+{% if domain_name_enable and domain_name %}
+    networks:
+      - back-tier
+{% endif %}
     command: mosquitto -c /mosquitto-no-auth.conf
 
   zigbee2mqtt:
@@ -71,3 +83,7 @@ services:
       - ./zigbee2mqtt/data:/app/data
     ports:
       - 8081:8080
+{% if domain_name_enable and domain_name %}
+    networks:
+      - front-tier
+{% endif %}
