@@ -86,4 +86,5 @@ services:
 {% if domain_name_enable and domain_name %}
     networks:
       - front-tier
+      - back-tier
 {% endif %}
