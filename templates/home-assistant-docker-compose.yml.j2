@@ -82,7 +82,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./data/zigbee2mqtt:/app/data
     ports:
-      - 8081:8080
+      - 7070:7070
 {% if domain_name_enable and domain_name %}
     networks:
       - front-tier
