@@ -11,10 +11,16 @@ volumes:
 {% endif %}
 
 networks:
-  front-tier:
-    name: internet-monitoring-front-tier
   back-tier:
     name: internet-monitoring-back-tier
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
+  front-tier:
+    name: internet-monitoring-front-tier
+    ipam:
+      config:
+        - subnet: 172.16.1.0/24
 
 services:
 {% if domain_name_enable %}
