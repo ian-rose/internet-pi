@@ -13,7 +13,7 @@
     state: directory
     mode: 0755
   loop:
-    - "{{ homeassistant_dir.path }}/config/homeassistant"
+    - "{{ homeassistant_dir.path }}/data/home-assistant/config"
     - "{{ homeassistant_dir.path }}/data/mqtt"
     - "{{ homeassistant_dir.path }}/data/zigbee2mqtt"
   become: false
