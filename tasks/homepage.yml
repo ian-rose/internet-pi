@@ -5,31 +5,28 @@
     state: directory
     mode: 0755
   become: false
+  register: homepage_dir
 
-- name: Ensure Homepage config directory exists.
+- name: Ensure Homepage supporting directories exist.
   file:
-    path: "{{ config_dir }}/homepage/config"
+    path: "{{ item }}"
     state: directory
     mode: 0755
-  become: false
-
-- name: Ensure Homepage images directory exists.
-  file:
-    path: "{{ config_dir }}/homepage/images"
-    state: directory
-    mode: 0755
+  loop:
+    - "{{ homepage_dir.path }}/config"
+    - "{{ homepage_dir.path }}/images"
   become: false
 
 - name: Copy Homepage background image.
   ansible.builtin.copy:
     src: images/homepage-background.png
-    dest: "{{ config_dir }}/homepage/images/homepage-background.png"
+    dest: "{{ homepage_dir.path }}/images/homepage-background.png"
     mode: '0640'
   become: false
 
 - name: Set Homepage settings.
   lineinfile:
-    dest: "{{ config_dir }}/homepage/config/settings.yaml"
+    dest: "{{ homepage_dir.path }}/config/settings.yaml"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   loop:
@@ -58,13 +55,13 @@
 - name: Copy Homepage docker-compose template to Pi.
   ansible.builtin.template:
     src: templates/homepage-docker-compose.yml.j2
-    dest: "{{ config_dir }}/homepage/docker-compose.yml"
+    dest: "{{ homepage_dir.path }}/docker-compose.yml"
     mode: '0640'
   become: false
   notify: Restart homepage
 
 - name: Ensure Homepage is running.
   community.docker.docker_compose_v2:
-    project_src: "{{ config_dir }}/homepage/"
+    project_src: "{{ homepage_dir.path }}/"
     build: never
   become: false

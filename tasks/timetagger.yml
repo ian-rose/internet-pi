@@ -5,17 +5,18 @@
     state: directory
     mode: 0755
   become: false
+  register: timetagger_dir
 
 - name: Copy Timetagger docker-compose template to Pi.
   ansible.builtin.template:
     src: templates/timetagger-docker-compose.yml.j2
-    dest: "{{ config_dir }}/timetagger/docker-compose.yml"
+    dest: "{{ timetagger_dir.path }}/docker-compose.yml"
     mode: '0640'
   become: false
   notify: Restart timetagger
 
 - name: Ensure Timetagger is running.
   community.docker.docker_compose_v2:
-    project_src: "{{ config_dir }}/timetagger/"
+    project_src: "{{ timetagger_dir.path }}/"
     build: never
   become: false
