@@ -12,8 +12,11 @@
   # Allowed values are:
   #     Array of IP addresses and/or hostnames, optionally with a port (#...)
   upstreams = [
-    "8.8.8.8",
-    "8.8.4.4"
+{% if dns_servers %}
+    {% for server in dns_servers %}
+    "{{ server }}",
+    {% endfor %}
+{% endif %}
   ] ### CHANGED, default = []
 
   # Use this option to control deep CNAME inspection. Disabling it might be beneficial
@@ -132,7 +135,9 @@
   # Allowed values are:
   #     Array of custom DNS records each one in HOSTS form: "IP HOSTNAME [HOSTNAME ...]"
   hosts = [
-    "10.0.0.2 innen.haus"
+{% if domain_enable %}
+    "{{ domain_address }} {{ domain }}"
+{% endif %}
   ] ### CHANGED, default = []
 
   # If set, queries for plain names, without dots or domain parts, are never forwarded to
@@ -227,12 +232,11 @@
   # Allowed values are:
   #     Array of CNAMEs, each one in the following form: "<cname>,<target>[,<TTL>]"
   cnameRecords = [
-    "grafana.innen.haus,innen.haus",
-    "pihole.innen.haus,innen.haus",
-    "prometheus.innen.haus,innen.haus",
-    "timetagger.innen.haus,innen.haus",
-    "homeassistant.innen.haus,innen.haus",
-    "zigbee2mqtt.innen.haus,innen.haus"
+{% if domain_enable %}
+  {% for subdomain in subdomains %}
+    "{{ subdomain }}.{{ domain }},{{ domain }}",
+  {% endfor %}
+{% endif %}
   ] ### CHANGED, default = []
 
   # Port used by the DNS server
@@ -263,26 +267,28 @@
   #
   # Allowed values are:
   #     Array of reverse servers each one in the following form:
-  #    
+  #
   #     "<enabled>,<ip-address>[/<prefix-len>],<server>[#<port>][,<domain>]"
-  #    
+  #
   #    Explanation of individual components:
-  #    
+  #
   #     - "<enabled>": either "true" or "false"
-  #    
+  #
   #     - "<ip-address>[/<prefix-len>]": Address range for the reverse server feature in
   #     CIDR notation. If the prefix length is omitted, either 32 (IPv4) or 128 (IPv6)
   #     are substituted (exact address match). This is almost certainly not what you
   #     want here.
   #     Example: "192.168.0.0/24" for the range 192.168.0.1 - 192.168.0.255
-  #    
+  #
   #     - "<server>[#<port>]": Target server to be used for the reverse server feature
   #     Example: "192.168.0.1#53"
-  #    
+  #
   #     - "<domain>": Domain used for the reverse server feature (e.g., "fritz.box")
   #     Example: "fritz.box"
   revServers = [
-    "true,10.0.0.0/24,10.0.0.1,innen.haus"
+{% if domain_enable %}
+    "true,10.0.0.0/24,10.0.0.1,{{ domain }}"
+{% endif %}
   ] ### CHANGED, default = []
 
   [dns.domain]
@@ -310,7 +316,7 @@
     #
     # Allowed values are:
     #     Any valid domain
-    name = "innen.haus" ### CHANGED, default = "lan"
+    name = "{{ domain }}" ### CHANGED, default = "lan"
 
     # If set, the domain configured by dns.domain.name is considered local and queries for
     # this domain are never forwarded upstream unless a dns.revServer is configured for
@@ -1445,7 +1451,7 @@
   #
   # Allowed values are:
   #     true or false
-  readOnly = true
+  readOnly = true ### CHANGED, default = false
 
   # Should FTL normalize reported CPU usage?
   #

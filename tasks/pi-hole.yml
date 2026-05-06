@@ -23,6 +23,13 @@
     build: never
   become: false
 
+- name: Copy Pi-hole config to Pi.
+  ansible.builtin.template:
+    src: templates/pihole.toml.j2
+    dest: "{{ pi_hole_dir.path }}/etc-pihole/pihole.toml"
+    mode: '0644'
+  become: false
+
 - name: Copy Pi-hole backup script to Pi.
   ansible.builtin.template:
     src: templates/pi-hole-backup.sh.j2
