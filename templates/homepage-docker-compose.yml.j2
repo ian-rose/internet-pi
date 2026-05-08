@@ -34,5 +34,3 @@ services:
     networks:
       - front-tier
 {% endif %}
-    dns:
-      {{ dns_servers | to_nice_yaml() | indent(6, False) }}
