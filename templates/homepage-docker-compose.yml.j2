@@ -3,7 +3,7 @@
 
 # Use the same networks as internet-monitoring.
 {# Make sure homepage and nginx-proxy are in the same network #}
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
 networks:
   front-tier:
     name: internet-monitoring-front-tier
@@ -14,13 +14,13 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: {{ domain_name }}
-      VIRTUAL_HOST: {{ domain_name }}
+      HOMEPAGE_ALLOWED_HOSTS: '{{ domain.base }}'
+      VIRTUAL_HOST: '{{ domain.base }}'
       VIRTUAL_PORT: 3000
-{% if ssl_enable %}
-      LETSENCRYPT_HOST: {{ domain_name }}
+{% if services.ssl.enable %}
+      LETSENCRYPT_HOST: '{{ domain.base }}'
 {% endif %}
 {% endif %}
     volumes:
@@ -30,10 +30,9 @@ services:
     ports:
       - 3100:3000
     restart: unless-stopped
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
     networks:
       - front-tier
 {% endif %}
     dns:
-      - 8.8.8.8
-      - 8.8.4.4
+      {{ dns_servers | to_nice_yaml() | indent(6, False) }}

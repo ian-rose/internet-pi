@@ -135,8 +135,8 @@
   # Allowed values are:
   #     Array of custom DNS records each one in HOSTS form: "IP HOSTNAME [HOSTNAME ...]"
   hosts = [
-{% if domain_enable %}
-    "{{ domain_address }} {{ domain }}"
+{% if domain.enable %}
+    "{{ domain.ip_address }} {{ domain.base }}"
 {% endif %}
   ] ### CHANGED, default = []
 
@@ -232,9 +232,9 @@
   # Allowed values are:
   #     Array of CNAMEs, each one in the following form: "<cname>,<target>[,<TTL>]"
   cnameRecords = [
-{% if domain_enable %}
-  {% for subdomain in subdomains %}
-    "{{ subdomain }}.{{ domain }},{{ domain }}",
+{% if domain.enable %}
+  {% for subdomain in domain.subdomains %}
+    "{{ subdomain }}.{{ domain.base }},{{ domain.base }}",
   {% endfor %}
 {% endif %}
   ] ### CHANGED, default = []
@@ -286,8 +286,8 @@
   #     - "<domain>": Domain used for the reverse server feature (e.g., "fritz.box")
   #     Example: "fritz.box"
   revServers = [
-{% if domain_enable %}
-    "true,10.0.0.0/24,10.0.0.1,{{ domain }}"
+{% if domain.enable %}
+    "true,10.0.0.0/24,10.0.0.1,{{ domain.base }}"
 {% endif %}
   ] ### CHANGED, default = []
 
@@ -316,7 +316,7 @@
     #
     # Allowed values are:
     #     Any valid domain
-    name = "{{ domain }}" ### CHANGED, default = "lan"
+    name = "{{ domain.base }}" ### CHANGED, default = "lan"
 
     # If set, the domain configured by dns.domain.name is considered local and queries for
     # this domain are never forwarded upstream unless a dns.revServer is configured for

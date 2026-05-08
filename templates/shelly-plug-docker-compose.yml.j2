@@ -17,9 +17,9 @@ services:
     ports:
       - "9924:80"
     environment:
-      SHELLY_HOSTNAME: '{{ shelly_plug_hostname }}'
-      SHELLY_HTTP_USERNAME: '{{ shelly_plug_http_username }}'
-      SHELLY_HTTP_PASSWORD: '{{ shelly_plug_http_password }}'
+      SHELLY_HOSTNAME: '{{ services.shelly_plug.hostname }}'
+      SHELLY_HTTP_USERNAME: '{{ services.shelly_plug.http_username }}'
+      SHELLY_HTTP_PASSWORD: '{{ services.shelly_plug.http_password }}'
     volumes:
       - './:/var/www/html'
     restart: unless-stopped

@@ -3,7 +3,7 @@
 
 # Use the same networks as internet-monitoring.
 {# Make sure home assistant and nginx-proxy are in the same network #}
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
 networks:
   front-tier:
     name: internet-monitoring-front-tier
@@ -27,17 +27,17 @@ services:
     environment:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
-{% if domain_name_enable and domain_name and domain_homeassistant %}
-      - VIRTUAL_HOST={{ domain_homeassistant }}.{{ domain_name }}
+{% if domain.enable and domain.base and domain.subdomains.homeassistant %}
+      - VIRTUAL_HOST={{ domain.subdomains.homeassistant }}.{{ domain.base }}
       - VIRTUAL_PORT=8123
-{% if ssl_enable %}
-      - LETSENCRYPT_HOST={{ domain_homeassistant }}.{{ domain_name }}
+{% if services.ssl.enable %}
+      - LETSENCRYPT_HOST={{ domain.subdomains.homeassistant }}.{{ domain.base }}
 {% endif %}
 {% endif %}
     restart: unless-stopped
     ports:
       - 8123:8123
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
     networks:
       - front-tier
       - back-tier
@@ -57,7 +57,7 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
     networks:
       - back-tier
 {% endif %}
@@ -68,11 +68,11 @@ services:
     environment:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
-{% if domain_name_enable and domain_name and domain_zigbee2mqtt %}
-      - VIRTUAL_HOST={{ domain_zigbee2mqtt }}.{{ domain_name }}
+{% if domain.enable and domain.base and domain.subdomains.zigbee2mqtt %}
+      - VIRTUAL_HOST={{ domain.subdomains.zigbee2mqtt }}.{{ domain.base }}
       - VIRTUAL_PORT=8081
-{% if ssl_enable %}
-      - LETSENCRYPT_HOST={{ domain_zigbee2mqtt }}.{{ domain_name }}
+{% if services.ssl.enable %}
+      - LETSENCRYPT_HOST={{ domain.subdomains.zigbee2mqtt }}.{{ domain.base }}
 {% endif %}
 {% endif %}
     restart: unless-stopped
@@ -83,7 +83,7 @@ services:
       - ./data/zigbee2mqtt:/app/data
     ports:
       - 7070:7070
-{% if domain_name_enable and domain_name %}
+{% if domain.enable and domain.base %}
     networks:
       - front-tier
       - back-tier

@@ -34,7 +34,7 @@ datasources:
     version: 1
     editable: true
 
-{% if log_monitoring_enable %}
+{% if services.log_monitoring.enable %}
   - name: Loki
     type: loki
     access: proxy

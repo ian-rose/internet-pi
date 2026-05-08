@@ -36,32 +36,32 @@
 
     - name: Set up Internet Monitoring.
       ansible.builtin.import_tasks: tasks/internet-monitoring.yml
-      when: monitoring_enable
+      when: services.monitoring.enable
 
     - name: Set up Pi Hole.
       ansible.builtin.import_tasks: tasks/pi-hole.yml
-      when: pihole_enable
+      when: services.pihole.enable
 
     - name: Set up Shelly Plug Monitoring.
       ansible.builtin.import_tasks: tasks/shelly-plug.yml
-      when: shelly_plug_enable
+      when: services.shelly_plug.enable
 
     - name: Set up Air Gradient Monitoring.
       ansible.builtin.import_tasks: tasks/airgradient.yml
-      when: airgradient_enable
+      when: services.airgradient.enable
 
     - name: Set up Starlink Monitoring.
       ansible.builtin.import_tasks: tasks/starlink.yml
-      when: starlink_enable
+      when: services.starlink.enable
 
     - name: Set up Timetagger.
       ansible.builtin.import_tasks: tasks/timetagger.yml
-      when: timetagger_enable
+      when: services.timetagger.enable
 
     - name: Set up Homepage.
       ansible.builtin.import_tasks: tasks/homepage.yml
-      when: homepage_enable
+      when: services.homepage.enable
 
     - name: Set up Home Assistant.
       ansible.builtin.import_tasks: tasks/home-assistant.yml
-      when: homeassistant_enable
+      when: services.homeassistant.enable

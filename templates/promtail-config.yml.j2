@@ -30,7 +30,7 @@ scrape_configs:
         job: docker
         __path__: /var/lib/docker/containers/*/*-json.log
 
-{% if syslog_monitoring_enable %}
+{% if services.syslog_monitoring.enable %}
 # syslog target
 - job_name: syslog
   syslog:

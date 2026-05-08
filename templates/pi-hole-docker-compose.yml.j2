@@ -3,7 +3,7 @@
 # Use the same networks as internet-monitoring.
 {# Make sure pihole and nginx-proxy are in the same network #}
 networks:
-{% if domain_enable %}
+{% if domain.enable %}
   front-tier:
     name: internet-monitoring-front-tier
     external: true
@@ -18,12 +18,12 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     restart: unless-stopped
-    hostname: {{ subdomains['pihole'] }}
+    hostname: {{ domain.subdomains.pihole }}
     ports:
       - "53:53/tcp"
       - "53:53/udp"
       - "67:67/udp"
-{% if domain_enable %}
+{% if domain.enable %}
       - "38080:80/tcp"
       - "3443:443/tcp"
 {% else %}
@@ -31,17 +31,21 @@ services:
       - "443:443/tcp"
 {% endif %}
     environment:
-      TZ: '{{ pihole['timezone'] }}'
-      FTLCONF_webserver_api_password: '{{ pihole['password'] }}'
-      WEBPASSWORD: '{{ pihole['password'] }}'
-      FTLCONF_dns_listeningMode: '{{ pihole['dns_listeningMode'] }}'
-{% if domain_enable and domain and subdomains['pihole'] %}
-      VIRTUAL_HOST: {{ subdomains['pihole'] }}.{{ domain }}
-      VIRTUAL_PORT: 80
-{% if ssl_enable %}
-      LETSENCRYPT_HOST: {{ subdomains['pihole'] }}.{{ domain }}
+      TZ: '{{ services.pihole.timezone }}'
+      FTLCONF_webserver_api_password: '{{ services.pihole.password }}'
+      WEBPASSWORD: '{{ services.pihole.password }}'
+      FTLCONF_dns_listeningMode: '{{ services.pihole.dns_listeningMode }}'
+{% if domain.enable %}
+      FTLCONF_dns_reply_host_IPv4: '{{ domain.ip_address }}'
+      FTLCONF_dns_reply_host_force4: 'true'
 {% endif %}
-      PROXY_LOCATION: {{ subdomains['pihole'] }}
+{% if domain.enable and domain.base and domain.subdomains.pihole %}
+      VIRTUAL_HOST: '{{ domain.subdomains.pihole }}.{{ domain.base }}'
+      VIRTUAL_PORT: 80
+{% if services.ssl.enable %}
+      LETSENCRYPT_HOST: '{{ domain.subdomains.pihole }}.{{ domain.base }}'
+{% endif %}
+      PROXY_LOCATION: '{{ domain.subdomains.pihole }}'
     networks:
       - front-tier
       - back-tier
@@ -64,8 +68,8 @@ services:
     ports:
       - "9617:9617"
     environment:
-      PIHOLE_HOSTNAME: '{{ subdomains['pihole'] }}'
-      PIHOLE_PASSWORD: '{{ pihole['password'] }}'
+      PIHOLE_HOSTNAME: '{{ domain.subdomains.pihole }}'
+      PIHOLE_PASSWORD: '{{ services.pihole.password }}'
       INTERVAL: '30s'
       PORT: 9617
     networks:
