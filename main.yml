@@ -50,10 +50,6 @@
       ansible.builtin.import_tasks: tasks/airgradient.yml
       when: services.airgradient.enable
 
-    - name: Set up Starlink Monitoring.
-      ansible.builtin.import_tasks: tasks/starlink.yml
-      when: services.starlink.enable
-
     - name: Set up Timetagger.
       ansible.builtin.import_tasks: tasks/timetagger.yml
       when: services.timetagger.enable

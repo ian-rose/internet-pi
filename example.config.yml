@@ -49,6 +49,3 @@ airgradient_sensors:
   - id: livingroom
     ip: "192.168.0.123"
     port: 9925
-
-# Starlink configuration. (Also requires `monitoring_enable`)
-starlink_enable: false
