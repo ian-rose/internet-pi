@@ -25,29 +25,29 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./data/home-assistant/config:/config
     environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
 {% if domain.enable and domain.base and domain.subdomains.homeassistant %}
-      - VIRTUAL_HOST={{ domain.subdomains.homeassistant }}.{{ domain.base }}
-      - VIRTUAL_PORT=8123
+      VIRTUAL_HOST: '{{ domain.subdomains.homeassistant }}.{{ domain.base }}'
+      VIRTUAL_PORT: 8123
 {% if services.ssl.enable %}
-      - LETSENCRYPT_HOST={{ domain.subdomains.homeassistant }}.{{ domain.base }}
+      LETSENCRYPT_HOST: '{{ domain.subdomains.homeassistant }}.{{ domain.base }}'
 {% endif %}
 {% endif %}
     restart: unless-stopped
     ports:
       - 8123:8123
-{% if domain.enable and domain.base %}
     networks:
+{% if domain.enable and domain.base %}
       - front-tier
-      - back-tier
 {% endif %}
+      - back-tier
 
   mqtt:
     container_name: mqtt
     environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
     image: eclipse-mosquitto:latest
     restart: unless-stopped
     volumes:
@@ -57,22 +57,20 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
-{% if domain.enable and domain.base %}
     networks:
       - back-tier
-{% endif %}
     command: mosquitto -c /mosquitto-no-auth.conf
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
     environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
 {% if domain.enable and domain.base and domain.subdomains.zigbee2mqtt %}
-      - VIRTUAL_HOST={{ domain.subdomains.zigbee2mqtt }}.{{ domain.base }}
-      - VIRTUAL_PORT=8081
+      VIRTUAL_HOST: '{{ domain.subdomains.zigbee2mqtt }}.{{ domain.base }}'
+      VIRTUAL_PORT: 8081
 {% if services.ssl.enable %}
-      - LETSENCRYPT_HOST={{ domain.subdomains.zigbee2mqtt }}.{{ domain.base }}
+      LETSENCRYPT_HOST: '{{ domain.subdomains.zigbee2mqtt }}.{{ domain.base }}'
 {% endif %}
 {% endif %}
     restart: unless-stopped
@@ -83,8 +81,8 @@ services:
       - ./data/zigbee2mqtt:/app/data
     ports:
       - 7070:7070
-{% if domain.enable and domain.base %}
     networks:
+{% if domain.enable and domain.base %}
       - front-tier
-      - back-tier
 {% endif %}
+      - back-tier
