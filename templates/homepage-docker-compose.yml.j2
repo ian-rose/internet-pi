@@ -16,6 +16,8 @@ services:
     container_name: homepage
 {% if domain.enable and domain.base %}
     environment:
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
       HOMEPAGE_ALLOWED_HOSTS: '{{ domain.base }}'
       VIRTUAL_HOST: '{{ domain.base }}'
       VIRTUAL_PORT: 3000
