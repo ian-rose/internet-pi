@@ -1,0 +1,13 @@
+#! /usr/bin/env bash
+
+cd "{{ config_dir }}"
+mapfile -t folders < <(find . -maxdepth 2 -name "docker-compose.yml" -printf '%h\n' | sed 's|^\./||')
+
+for folder in "${folders[@]}"; do
+  echo "Checking ${folder}"
+  cd "{{ config_dir }}/${folder}"
+  docker compose pull
+  docker compose up -d --no-deps
+done
+
+docker system prune --all -f

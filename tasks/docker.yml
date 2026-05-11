@@ -63,6 +63,13 @@
     groups: docker
     append: true
 
+- name: Copy templated update.sh into place.
+  ansible.builtin.template:
+    src: templates/update.sh.j2
+    dest: "{{ config_dir }}/update.sh"
+    mode: 0754
+  become: true
+
 # reset_connection doesn't support conditionals.
 - name: Reset connection so docker group is picked up.
   meta: reset_connection
