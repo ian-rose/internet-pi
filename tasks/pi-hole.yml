@@ -17,17 +17,19 @@
 
 # TODO: The first time this playbook is run, the `pi` user may not be added
 # to the `docker` group, so this task may fail.
-- name: Ensure Pi-hole is running.
-  community.docker.docker_compose_v2:
-    project_src: "{{ pi_hole_dir.path }}/"
-    build: never
-  become: false
-
 - name: Copy Pi-hole config to Pi.
   ansible.builtin.template:
     src: templates/pihole.toml.j2
     dest: "{{ pi_hole_dir.path }}/etc-pihole/pihole.toml"
     mode: '0644'
+  vars:
+    subdomains: "{{ services | json_query('*.subdomain') | flatten }}"
+  become: false
+
+- name: Ensure Pi-hole is running.
+  community.docker.docker_compose_v2:
+    project_src: "{{ pi_hole_dir.path }}/"
+    build: never
   become: false
 
 - name: Copy Pi-hole backup script to Pi.

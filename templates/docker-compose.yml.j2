@@ -93,14 +93,14 @@ services:
       - speedtest:speedtest
     networks:
       - back-tier
-{% if domain.enable and domain.base and domain.subdomains.prometheus %}
+{% if domain.enable and domain.base and services.prometheus.subdomain %}
     depends_on:
       - nginx-proxy
     environment:
-      - VIRTUAL_HOST={{ domain.subdomains.prometheus }}.{{ domain.base }}
+      - VIRTUAL_HOST={{ services.prometheus.subdomain }}.{{ domain.base }}
       - VIRTUAL_PORT=9090
 {% if services.ssl.enable %}
-      - LETSENCRYPT_HOST={{ domain.subdomains.prometheus }}.{{ domain.base }}
+      - LETSENCRYPT_HOST={{ services.prometheus.subdomain }}.{{ domain.base }}
 {% endif %}
 {% endif %}
 
@@ -120,13 +120,13 @@ services:
       - front-tier
     depends_on:
       - prometheus
-{% if domain.enable and domain.base and domain.subdomains.grafana %}
+{% if domain.enable and domain.base and services.grafana.subdomain %}
       - nginx-proxy
     environment:
-      - VIRTUAL_HOST={{ domain.subdomains.grafana }}.{{ domain.base }}
+      - VIRTUAL_HOST={{ services.grafana.subdomain }}.{{ domain.base }}
       - VIRTUAL_PORT=3000
 {% if services.ssl.enable %}
-      - LETSENCRYPT_HOST={{ domain.subdomains.grafana }}.{{ domain.base }}
+      - LETSENCRYPT_HOST={{ services.grafana.subdomain }}.{{ domain.base }}
 {% endif %}
 {% endif %}
 
@@ -141,14 +141,14 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - back-tier
-{% if domain.enable and domain.base and domain.subdomains.loki %}
+{% if domain.enable and domain.base and services.loki.subdomain %}
     depends_on:
       - nginx-proxy
     environment:
-      - VIRTUAL_HOST={{ domain.subdomains.loki }}.{{ domain.base }}
+      - VIRTUAL_HOST={{ services.loki.subdomain }}.{{ domain.base }}
       - VIRTUAL_PORT=3100
 {% if services.ssl.enable %}
-      - LETSENCRYPT_HOST={{ domain.subdomains.loki }}.{{ domain.base }}
+      - LETSENCRYPT_HOST={{ services.loki.subdomain }}.{{ domain.base }}
 {% endif %}
 {% endif %}
 

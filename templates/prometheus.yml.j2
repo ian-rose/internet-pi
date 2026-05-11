@@ -69,9 +69,9 @@ scrape_configs:
       - targets: {{ services.prometheus.node_exporter_targets | to_yaml }}
 
 {% if services.pihole.enable %}
-  - job_name: '{{ domain.subdomains.pihole }}'
+  - job_name: '{{ services.pihole.subdomain }}'
     static_configs:
-      - targets: ['{{ domain.subdomains.pihole }}-exporter:9617']
+      - targets: ['{{ services.pihole.subdomain }}-exporter:9617']
 {% endif %}
 
 {% filter indent(width=2,first=True) %}

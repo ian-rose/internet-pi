@@ -1,7 +1,6 @@
 # Pi-hole configuration file (v6.6.1)
 # Encoding: UTF-8
 # This file is managed by Ansible
-# Last updated on {{ now(fmt='%Y-%m-%d %H:%M:%S %Z') }}
 
 [dns]
   # Upstream DNS Servers to be used by Pi-hole. If this is not set, Pi-hole will not
@@ -233,7 +232,7 @@
   #     Array of CNAMEs, each one in the following form: "<cname>,<target>[,<TTL>]"
   cnameRecords = [
 {% if domain.enable %}
-  {% for subdomain in domain.subdomains %}
+  {% for subdomain in subdomains %}
     "{{ subdomain }}.{{ domain.base }},{{ domain.base }}",
   {% endfor %}
 {% endif %}

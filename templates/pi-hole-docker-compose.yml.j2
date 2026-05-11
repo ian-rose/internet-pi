@@ -18,7 +18,7 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     restart: unless-stopped
-    hostname: {{ domain.subdomains.pihole }}
+    hostname: {{ services.pihole.subdomain }}
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -39,13 +39,13 @@ services:
       FTLCONF_dns_reply_host_IPv4: '{{ domain.ip_address }}'
       FTLCONF_dns_reply_host_force4: 'true'
 {% endif %}
-{% if domain.enable and domain.base and domain.subdomains.pihole %}
-      VIRTUAL_HOST: '{{ domain.subdomains.pihole }}.{{ domain.base }}'
+{% if domain.enable and domain.base and services.pihole.subdomain %}
+      VIRTUAL_HOST: '{{ services.pihole.subdomain }}.{{ domain.base }}'
       VIRTUAL_PORT: 80
 {% if services.ssl.enable %}
-      LETSENCRYPT_HOST: '{{ domain.subdomains.pihole }}.{{ domain.base }}'
+      LETSENCRYPT_HOST: '{{ services.pihole.subdomain }}.{{ domain.base }}'
 {% endif %}
-      PROXY_LOCATION: '{{ domain.subdomains.pihole }}'
+      PROXY_LOCATION: '{{ services.pihole.subdomain }}'
     networks:
       - front-tier
       - back-tier
@@ -65,7 +65,7 @@ services:
     ports:
       - "9617:9617"
     environment:
-      PIHOLE_HOSTNAME: '{{ domain.subdomains.pihole }}'
+      PIHOLE_HOSTNAME: '{{ services.pihole.subdomain }}'
       PIHOLE_PASSWORD: '{{ services.pihole.password }}'
       INTERVAL: '30s'
       PORT: 9617
