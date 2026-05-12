@@ -58,6 +58,10 @@
     dest: "{{ homepage_dir.path }}/config/services.yaml"
     mode: '0644'
   become: false
+  vars:
+    devices: "{{ services.homepage.devices }}"
+    utilities: "{{ services | json_query('*.homepage.Utilities') | flatten }}"
+    applications: "{{ services | json_query('*.homepage.Applications') | flatten }}"
 
 - name: Copy Homepage docker-compose template to Pi.
   ansible.builtin.template:

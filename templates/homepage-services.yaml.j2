@@ -4,60 +4,10 @@
 # https://gethomepage.dev/configs/services/
 
 - Devices:
-
-  - Coruscant:
-      icon: opnsense
-      href: https://coruscant.innen.haus
-      description: Router
-  - Jakku:
-      icon: /images/switch.svg
-      href: http://jakku.innen.haus
-      description: Switch
-  - Scarif:
-      icon: /images/access-point.png
-      href: https://scarif.innen.haus
-      description: Access Point
-  - OpenSprinkler:
-      icon: opensprinkler
-      href: http://opensprinkler.innen.haus
-      description: ''
-#  - Shelly Plug:
-#      icon: shelly
-#      href: http://shellyplug1.innen.haus
-#      description: Power monitoring for network equipment
-  - Mustafar:
-      icon: synology
-      href: https://mustafar.innen.haus
-      description: Synology NAS
-  - Bracca:
-      icon: zigbee
-      href: http://bracca.innen.haus
-      description: Zigbee gateway
+  {{ devices | to_nice_yaml(indent=2) | indent(2, False) }}
 
 - Utilities:
-  - Grafana:
-      icon: grafana
-      href: https://grafana.innen.haus/d/cKihklRgz/monitoring
-      description: ''
-  - Prometheus:
-      icon: prometheus
-      href: https://prometheus.innen.haus
-      description: ''
-  - Zigbee2mqtt:
-      icon: zigbee2mqtt
-      href: https://zigbee2mqtt.innen.haus
-      description: ''
+  {{ utilities | to_nice_yaml(indent=2) | indent(2, False) }}
 
 - Applications:
-  - Pi-hole:
-      icon: pi-hole
-      href: https://pihole.innen.haus/admin/
-      description: ''
-  - Timetagger:
-      icon: timetagger-light
-      href: https://timetagger.innen.haus/timetagger/app/
-      description: ''
-  - Home Assistant:
-      icon: home-assistant
-      href: https://homeassistant.innen.haus
-      description: ''
+  {{ applications | to_nice_yaml(indent=2) | indent(2, False) }}
