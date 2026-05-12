@@ -52,6 +52,13 @@
       line: "hideVersion: {{ services.homepage.hideVersion }}"
   become: false
 
+- name: Copy Homepage services.yml to Pi.
+  ansible.builtin.template:
+    src: templates/homepage-services.yaml.j2
+    dest: "{{ homepage_dir.path }}/config/services.yaml"
+    mode: '0644'
+  become: false
+
 - name: Copy Homepage docker-compose template to Pi.
   ansible.builtin.template:
     src: templates/homepage-docker-compose.yml.j2
