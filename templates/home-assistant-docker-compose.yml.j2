@@ -68,7 +68,7 @@ services:
       PGID: '${PGID:-1000}'
 {% if domain.enable and domain.base and services.zigbee2mqtt.subdomain %}
       VIRTUAL_HOST: '{{ services.zigbee2mqtt.subdomain }}.{{ domain.base }}'
-      VIRTUAL_PORT: 8081
+      VIRTUAL_PORT: 7070
 {% if services.ssl.enable %}
       LETSENCRYPT_HOST: '{{ services.zigbee2mqtt.subdomain }}.{{ domain.base }}'
 {% endif %}
