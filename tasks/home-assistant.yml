@@ -14,7 +14,9 @@
     mode: 0755
   loop:
     - "{{ homeassistant_dir.path }}/data/home-assistant/config"
-    - "{{ homeassistant_dir.path }}/data/mqtt"
+    - "{{ homeassistant_dir.path }}/data/mqtt/config"
+    - "{{ homeassistant_dir.path }}/data/mqtt/data"
+    - "{{ homeassistant_dir.path }}/data/mqtt/log"
     - "{{ homeassistant_dir.path }}/data/zigbee2mqtt"
   become: false
 
