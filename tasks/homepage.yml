@@ -60,8 +60,8 @@
   become: false
   vars:
     devices: "{{ services.homepage.devices }}"
-    utilities: "{{ services | json_query('*.homepage.Utilities') | flatten }}"
-    applications: "{{ services | json_query('*.homepage.Applications') | flatten }}"
+    utilities: "{{ services | json_query('*.homepage.utilities') | flatten }}"
+    applications: "{{ services | json_query('*.homepage.applications') | flatten }}"
 
 - name: Copy Homepage docker-compose template to Pi.
   ansible.builtin.template:
