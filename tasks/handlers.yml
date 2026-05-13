@@ -2,6 +2,7 @@
 - name: Restart pi-hole
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/pi-hole/"
+    remove_orphans: true
     build: never
     state: restarted
   become: false
@@ -9,6 +10,7 @@
 - name: Restart internet-monitoring
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/internet-monitoring/"
+    remove_orphans: true
     build: never
     state: restarted
   become: false
@@ -16,6 +18,7 @@
 - name: Restart shelly-plug-prometheus
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/shelly-plug-prometheus/"
+    remove_orphans: true
     build: never
     state: restarted
   become: false
@@ -23,6 +26,7 @@
 - name: Restart timetagger
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/timetagger/"
+    remove_orphans: true
     build: never
     state: restarted
   become: false
@@ -30,6 +34,7 @@
 - name: Restart homepage
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/homepage/"
+    remove_orphans: true
     build: never
     state: restarted
   become: false
@@ -37,6 +42,7 @@
 - name: Restart Home Assistant
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/homeassistant/"
+    remove_orphans: true
     build: never
     state: restarted
   become: false
