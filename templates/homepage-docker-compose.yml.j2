@@ -28,7 +28,6 @@ services:
     volumes:
       - ./config:/app/config
       - ./images:/app/public/images
-      - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - 3100:3000
     restart: unless-stopped
