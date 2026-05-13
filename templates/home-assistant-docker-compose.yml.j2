@@ -86,3 +86,29 @@ services:
       - front-tier
 {% endif %}
       - back-tier
+
+{% if services.mqttx.enable %}
+  mqttx:
+    image: emqx/mqttx-web:latest
+    container_name: mqttx
+    environment:
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
+{% if domain.enable and domain.base and services.mqttx.subdomain %}
+      VIRTUAL_HOST: '{{ services.mqttx.subdomain }}.{{ domain.base }}'
+      VIRTUAL_PORT: 28080
+{% if services.ssl.enable %}
+      LETSENCRYPT_HOST: '{{ services.mqttx.subdomain }}.{{ domain.base }}'
+{% endif %}
+{% endif %}
+    ports:
+      - "28080:80"
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+    networks:
+{% if domain.enable and domain.base %}
+      - front-tier
+{% endif %}
+      - back-tier
+{% endif %}
