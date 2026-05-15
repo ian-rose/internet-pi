@@ -2,13 +2,19 @@
 - name: Configure Internet Pi.
   hosts: internet_pi
   become: true
+  vars:
+    config_dir: "{{ config.config_dir }}"
+    dns_servers: "{{ config.dns_servers }}"
+    domain: "{{ config.domain }}"
+    services: "{{ config.services | dict2items | rejectattr('value.enable', 'defined') | list | union( config.services | dict2items | selectattr('value.enable', 'defined') | rejectattr('value.enable', 'equalto', false) | list ) | items2dict }}"
+    enabled_services: "{{ config.services | dict2items | rejectattr('value.enable', 'defined') | list | union( config.services | dict2items | selectattr('value.enable', 'defined') | rejectattr('value.enable', 'equalto', false) | list ) | map('combine', {'value': true}) | list | union(config.services | dict2items | selectattr('value.enable', 'defined') | selectattr('value.enable', 'equalto', false) | map('combine', {'value': false}) | list) | items2dict }}"
+
 
   pre_tasks:
-    - name: Load configuration (with defaults from example file).
-      ansible.builtin.include_vars: "{{ item }}"
-      loop:
-        - example.config.yml
-        - config.yml
+    - name: Load configuration.
+      ansible.builtin.include_vars:
+        file: config.yml
+        name: config
 
     - name: Ensure apt cache is up to date.
       ansible.builtin.apt:
@@ -36,28 +42,35 @@
 
     - name: Set up Internet Monitoring.
       ansible.builtin.import_tasks: tasks/internet-monitoring.yml
-      when: services.monitoring.enable
+      when:
+        - enabled_services.monitoring
 
     - name: Set up Pi Hole.
       ansible.builtin.import_tasks: tasks/pi-hole.yml
-      when: services.pihole.enable
+      when:
+        - enabled_services.pihole
 
     - name: Set up Shelly Plug Monitoring.
       ansible.builtin.import_tasks: tasks/shelly-plug.yml
-      when: services.shelly_plug.enable
+      when:
+        - enabled_services.shelly_plug
 
     - name: Set up Air Gradient Monitoring.
       ansible.builtin.import_tasks: tasks/airgradient.yml
-      when: services.airgradient.enable
+      when:
+        - enabled_services.airgradient
 
     - name: Set up Timetagger.
       ansible.builtin.import_tasks: tasks/timetagger.yml
-      when: services.timetagger.enable
+      when:
+        - enabled_services.timetagger
 
     - name: Set up Homepage.
       ansible.builtin.import_tasks: tasks/homepage.yml
-      when: services.homepage.enable
+      when:
+        - enabled_services.homepage
 
     - name: Set up Home Assistant.
       ansible.builtin.import_tasks: tasks/home-assistant.yml
-      when: services.homeassistant.enable
+      when:
+        - enabled_services.homeassistant

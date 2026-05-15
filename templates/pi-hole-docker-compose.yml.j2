@@ -42,7 +42,7 @@ services:
 {% if domain.enable and domain.base and services.pihole.subdomain %}
       VIRTUAL_HOST: '{{ services.pihole.subdomain }}.{{ domain.base }}'
       VIRTUAL_PORT: 80
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       LETSENCRYPT_HOST: '{{ services.pihole.subdomain }}.{{ domain.base }}'
 {% endif %}
       PROXY_LOCATION: '{{ services.pihole.subdomain }}'

@@ -21,7 +21,7 @@ services:
       HOMEPAGE_ALLOWED_HOSTS: '{{ domain.base }}'
       VIRTUAL_HOST: '{{ domain.base }}'
       VIRTUAL_PORT: 3000
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       LETSENCRYPT_HOST: '{{ domain.base }}'
 {% endif %}
 {% endif %}

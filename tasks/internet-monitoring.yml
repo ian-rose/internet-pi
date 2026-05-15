@@ -59,7 +59,7 @@
     state: directory
     mode: '0755'
   when:
-    - services.log_monitoring.enable
+    - enabled_services.log_monitoring
 
 - name: Create promtail directory.
   ansible.builtin.file:
@@ -67,7 +67,7 @@
     state: directory
     mode: '0755'
   when:
-    - services.log_monitoring.enable
+    - enabled_services.log_monitoring
 
 - name: Copy templated log-monitoring files into place.
   ansible.builtin.template:
@@ -82,14 +82,14 @@
   notify: Restart internet-monitoring
   become: false
   when:
-    - services.log_monitoring.enable
+    - enabled_services.log_monitoring
 
 - name: Install grafana/loki-docker-driver plugin
   community.docker.docker_plugin:
     plugin_name: grafana/loki-docker-driver:arm-64
     alias: loki
   when:
-    - services.log_monitoring.enable
+    - enabled_services.log_monitoring
 
 - name: Copy templated docker daemon.json into place.
   ansible.builtin.template:
@@ -99,7 +99,7 @@
   notify: Restart internet-monitoring
   become: true
   when:
-    - services.log_monitoring.enable
+    - enabled_services.log_monitoring
 
 - name: Restart service docker
   ansible.builtin.service:
@@ -107,7 +107,7 @@
     state: restarted
   become: true
   when:
-    - services.log_monitoring.enable
+    - enabled_services.log_monitoring
 
 - name: Ensure internet-monitoring environment is running.
   community.docker.docker_compose_v2:

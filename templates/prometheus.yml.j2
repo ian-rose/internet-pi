@@ -24,7 +24,7 @@ scrape_configs:
     static_configs:
       - targets: ['speedtest:9798']
 
-{% if services.shelly_plug.enable %}
+{% if enabled_services.shelly_plug %}
   - job_name: 'shelly-plug'
     metrics_path: /metrics
     scrape_interval: 1m
@@ -32,7 +32,7 @@ scrape_configs:
       - targets: ['{{ ansible_facts.default_ipv4.address }}:9924']
 {% endif %}
 
-{% if services.airgradient.enable %}
+{% if enabled_services.airgradient %}
 {% for sensor in services.airgradient.sensors %}
   - job_name: 'airgradient-{{ sensor.id }}'
     metrics_path: /metrics
@@ -68,7 +68,7 @@ scrape_configs:
     static_configs:
       - targets: {{ services.prometheus.node_exporter_targets | to_yaml }}
 
-{% if services.pihole.enable %}
+{% if enabled_services.pihole %}
   - job_name: '{{ services.pihole.subdomain }}'
     static_configs:
       - targets: ['{{ services.pihole.subdomain }}-exporter:9617']

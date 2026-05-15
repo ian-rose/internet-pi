@@ -28,7 +28,7 @@ services:
 {% if domain.enable and domain.base and services.timetagger.subdomain %}
       VIRTUAL_HOST: '{{ services.timetagger.subdomain }}.{{ domain.base }}'
       VIRTUAL_PORT: 8080
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       LETSENCRYPT_HOST: {{ services.timetagger.subdomain }}.{{ domain.base }}
 {% endif %}
 {% endif %}

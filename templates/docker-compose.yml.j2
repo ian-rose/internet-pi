@@ -3,7 +3,7 @@
 volumes:
   prometheus_data:
   grafana_data:
-{% if domain.enable and services.ssl.enable %}
+{% if domain.enable and enabled_services.ssl %}
   certs:
   html:
   acme:
@@ -30,7 +30,7 @@ services:
     restart: always
     ports:
       - "80:80"
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       - "443:443"
 {% endif %}
     networks:
@@ -41,7 +41,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       - certs:/etc/nginx/certs
       - html:/usr/share/nginx/html
       - vhost:/etc/nginx/vhost.d
@@ -100,7 +100,7 @@ services:
     environment:
       - VIRTUAL_HOST={{ services.prometheus.subdomain }}.{{ domain.base }}
       - VIRTUAL_PORT=9090
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       - LETSENCRYPT_HOST={{ services.prometheus.subdomain }}.{{ domain.base }}
 {% endif %}
 {% endif %}
@@ -127,12 +127,12 @@ services:
     environment:
       - VIRTUAL_HOST={{ services.grafana.subdomain }}.{{ domain.base }}
       - VIRTUAL_PORT=3000
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       - LETSENCRYPT_HOST={{ services.grafana.subdomain }}.{{ domain.base }}
 {% endif %}
 {% endif %}
 
-{% if services.log_monitoring.enable %}
+{% if enabled_services.log_monitoring %}
   loki:
     image: grafana/loki:2.6.1
     restart: always
@@ -159,7 +159,7 @@ services:
     restart: always
     volumes:
       - ./promtail/config.yml:/etc/promtail/config.yml
-{% if services.syslog_monitoring.enable %}
+{% if enabled_services.syslog_monitoring %}
     ports:
       - "514:1514"
 {% endif %}

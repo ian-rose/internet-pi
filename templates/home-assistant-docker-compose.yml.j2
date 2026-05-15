@@ -30,7 +30,7 @@ services:
 {% if domain.enable and domain.base and services.homeassistant.subdomain %}
       VIRTUAL_HOST: '{{ services.homeassistant.subdomain }}.{{ domain.base }}'
       VIRTUAL_PORT: 8123
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       LETSENCRYPT_HOST: '{{ services.homeassistant.subdomain }}.{{ domain.base }}'
 {% endif %}
 {% endif %}
@@ -69,7 +69,7 @@ services:
 {% if domain.enable and domain.base and services.zigbee2mqtt.subdomain %}
       VIRTUAL_HOST: '{{ services.zigbee2mqtt.subdomain }}.{{ domain.base }}'
       VIRTUAL_PORT: 7070
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       LETSENCRYPT_HOST: '{{ services.zigbee2mqtt.subdomain }}.{{ domain.base }}'
 {% endif %}
 {% endif %}
@@ -87,7 +87,7 @@ services:
 {% endif %}
       - back-tier
 
-{% if services.mqttx.enable %}
+{% if enabled_services.mqttx %}
   mqttx:
     image: emqx/mqttx-web:latest
     container_name: mqttx
@@ -97,7 +97,7 @@ services:
 {% if domain.enable and domain.base and services.mqttx.subdomain %}
       VIRTUAL_HOST: '{{ services.mqttx.subdomain }}.{{ domain.base }}'
       VIRTUAL_PORT: 28080
-{% if services.ssl.enable %}
+{% if enabled_services.ssl %}
       LETSENCRYPT_HOST: '{{ services.mqttx.subdomain }}.{{ domain.base }}'
 {% endif %}
 {% endif %}
